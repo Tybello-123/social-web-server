@@ -1,0 +1,89 @@
+html {
+    height: 100%;
+    width: 100%;
+  }
+  
+  body {
+    background-color: #eee;
+  }
+  
+  .linkWrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  
+  /* Main link element (<div> tag) */
+  .link {
+    background: white;
+  }
+  
+  /* Link title (<a> tag) */
+  .linkTitle {
+    color: #428bca;
+    text-decoration: none;
+    margin-right: 5px;
+  }
+  
+  .linkTitle:hover {
+    text-decoration: none;
+  }
+  
+  /* Link URL (<span> tag) */
+  .linkUrl {
+    font-weight: normal;
+    font-size: 80%;
+  }
+  
+  /* Link headline containing title & URL (<h4> tag) */
+  .linkHeadline {
+    margin: 0;
+  }
+  
+  /* Link author (<span> tag) */
+  .linkAuthor {
+    font-weight: normal;
+    font-size: 80%;
+  }
+  
+  /* Add a delete button */
+  .button{
+    height: 30px;
+    width: 100px;
+    background-color: #428bca;
+    border: none;
+    font-weight: bold;
+    color: white;
+    border-radius: 0.6em;
+  }
+  
+  .button:hover{
+  
+    background-color: #3d4042;
+    color: white;
+  
+  }
+  
+  
+  .linkForm {
+    margin-bottom: 20px;
+  }
+  
+  @media screen and (max-width: 420px){
+    
+  .linkWrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+     margin-bottom: 10px;
+  }
+  
+  .link{
+    margin-bottom: 1em;
+  }  
+  }
