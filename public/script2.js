@@ -122,24 +122,33 @@ form.addEventListener('submit',(e) => {
     return;
   }
   
-if(links.length > 0){
 
-  const newLink = new Link (
-    inputTitle.value,
-    inputUrl.value,
-    inputAuthor.value
-  )
+  const formData = new FormData();
+
+  formData.append("title", inputTitle.value)
+  formData.append("url", inputUrl.value)
+  formData.append("author", inputAuthor.value)
+
 //Add new link to page
+
+fetch(`${serverUrl}/api/links`, {
+  method : "POST",
+  body: formData
+})
+.then(response => response.json())
+.then(newLink => {
   const newLinkElement = createLink(newLink);
 
-  const infoElement = document.createElement("div");
-
+  // const infoElement = document.createElement("div");
+  content.appendChild(newLinkElement);
   
   inputTitle.value = "";
   inputUrl.value = "";
   inputAuthor.value = "";
-}
-   
+})
+.catch(err => {
+  console.log(err.message)
+})   
 })
 
 
@@ -147,7 +156,7 @@ if(links.length > 0){
 //after sending to the server send the response back to the user
 // and display on the screen
 
-fetch("http://localhost:3000/api/articles")
+fetch(`${serverUrl}/api/links`)
 .then(response => response.json())
 .then(links => {
   links.forEach(link => {

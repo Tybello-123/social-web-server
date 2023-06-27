@@ -6,9 +6,10 @@ const Link = require("./modules/links");
 
 
 const app = express()
-const upload = multer()
 
 
+app.use(express.json())
+app.use(express.urlencoded({extended: false}))
 app.use(express.static("public"))
 
 
@@ -39,13 +40,13 @@ app.get('/' , (req,res) => {
 })
 
 
-app.get('/api/links', (req, res) =>  {
-  
-    res.json(links);
 
+
+app.get('/api/links', (req, res) =>  {
+    res.json(links);
   });
   
-app.post('/api/links',upload.array(), (req, res, next) => {
+app.post('api/links', (req, res, next) => {
    // Handle the post for this route
    //create new link object
    const title = request.body.title;
@@ -60,6 +61,8 @@ app.post('/api/links',upload.array(), (req, res, next) => {
     //send the response back as a json
    res.json(link)
   })
+
+
 
 
 
