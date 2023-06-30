@@ -13,7 +13,7 @@ const upload = multer();
 app.use(express.static("public"))
 
 
-app.set("view engine", "ejs")
+// app.set("view engine", "ejs")
 
 //enabling CORS IN the server
 
@@ -47,19 +47,6 @@ app.get('/api/links', (req, res) =>  {
     res.json(links);
   });
 
-
-  
-// app.post("/links", upload.array(), (request, response) => {
-//   // Create new link object
-//   const title = request.body.title;
-//   const url = request.body.url;
-//   const author = request.body.author;
-//   const link = new Link(title, url, author);
-//   // Add new link to the beginning of the list
-//   links.unshift(link);
-//   // Send back newly created link as JSON
-//   response.json(link);
-// });
 
 
 
