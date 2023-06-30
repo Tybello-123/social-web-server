@@ -1,15 +1,15 @@
 const express = require('express');
-const multer = require('multer');
+const multer = require("multer");
 const Link = require("./modules/links");
 
 
 
 
 const app = express()
+const upload = multer();
 
-
-app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+// app.use(express.json())
+// app.use(express.urlencoded({extended: false}))
 app.use(express.static("public"))
 
 
@@ -36,6 +36,7 @@ links.push(new Link("Boing Boing", "boingboing.net", "Daniel"));
   
 
 app.get('/' , (req,res) => {
+
   res.sendFile(`${__dirname}/views/index.html`)
 })
 
@@ -45,19 +46,37 @@ app.get('/' , (req,res) => {
 app.get('/api/links', (req, res) =>  {
     res.json(links);
   });
+
+
   
-app.post('api/links', (req, res, next) => {
+// app.post("/links", upload.array(), (request, response) => {
+//   // Create new link object
+//   const title = request.body.title;
+//   const url = request.body.url;
+//   const author = request.body.author;
+//   const link = new Link(title, url, author);
+//   // Add new link to the beginning of the list
+//   links.unshift(link);
+//   // Send back newly created link as JSON
+//   response.json(link);
+// });
+
+
+
+
+  
+app.post('/links',upload.array(), (req, res) => {
    // Handle the post for this route
    //create new link object
-   const title = request.body.title;
-   const url = request.body.url;
-   const author = request.body.author;
+   const title = req.body.title;
+   const url = req.body.url;
+   const author = req.body.author;
 
   
-   const link = new(Link(title,url,author));
+   const link = new Link(title,url,author);
 
     //Add new link to the beginning of the list 
-   links.unshiift(link)
+   links.unshift(link)
     //send the response back as a json
    res.json(link)
   })

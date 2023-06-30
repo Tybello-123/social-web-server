@@ -54,10 +54,7 @@ linkAuthor.appendChild(document.createTextNode(`Submitted by ${link.author}`));
  
   linkWrapper.appendChild(linkEl);
   linkWrapper.appendChild(buttonDiv);
-   //append div of links to content element
-  // content.appendChild(linkWrapper);
 
-  
 
   //delete links  
   delButton.addEventListener("click", () => {
@@ -71,102 +68,113 @@ return linkWrapper;
 //create and return a DOM input element 
 //parameters name,placeholder and input size
 
-
-
-//create a form first
-const form = document.createElement("form");
-form.classList.add("linkForm");
-//append form to content element
-content.appendChild(form);
-
-//append the input elements into the 
-const inputTitle = document.createElement("input");
-inputTitle.type="text";
-inputTitle.placeholder="Enter the link title";
-inputTitle.setAttribute= "required";
-
-const inputUrl = document.createElement("input");
-inputUrl.type="text";
-inputUrl.placeholder="Enter the link Url";
-inputUrl.setAttribute= "required";
-
-
-const inputAuthor = document.createElement("input");
-inputAuthor.type="text";
-inputAuthor.placeholder="Enter the link Author";
-inputAuthor.setAttribute= "required";
-
-
-const button = document.createElement("button");
-button.classList.add("btn-primary");
-button.type = "submit";
-button.textContent = "Add Link"
-
-
-form.appendChild(inputTitle);
-form.appendChild(inputUrl);
-form.appendChild(inputAuthor);
-form.appendChild(button); 
+const createInputElement = (name,placeholder,size) => {
+  const inputElement = document.createElement("input");
+  inputElement.type = "text";
+  inputElement.setAttribute("name", name);
+  inputElement.setAttribute("placeholder", placeholder);
+  inputElement.setAttribute("size", size);
+  inputElement.setAttribute("required", "true");
+  inputElement.classList.add("form-control");
+  return inputElement;
+}
 
 
 
+//capture submitting of link separate to creating the form element
+const submitLink = e => {
+  // Cancel default form behavior
+  e.preventDefault();
+
+  // Create a FormData object, passing the form as a parameter
+  const formData = new FormData(e.target);
+  // Send link data to the server with an aynchronous POST request
+  fetch(`${serverUrl}/links`, {
+    method: "POST",
+    body: formData
+  })
+    .then(response => response.json())
+    .then(newLink => {
+      // Add new link to page, replacing form
+      //the new link parameter replaces the link paramenter in the creatLink function created first
+      const newLinkElement = createLink(newLink);
+      content.replaceChild(newLinkElement, e.target);
+
+      // Create info message indicating success
+      const infoElement = document.createElement("div");
+      infoElement.classList.add("alert");
+      infoElement.classList.add("alert-success");
+      infoElement.textContent = `The link ${newLink.title} has been succesfully added!`;
+      content.insertBefore(infoElement, newLinkElement);
+      // Remove info message after 2 seconds
+      setTimeout(() => {
+        content.removeChild(infoElement);
+      }, 2000);
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
+};
 
 
 
+// Create and return a form for submitting a new link
+const createLinkForm = () => {
+  // Create input fields for link properties by calling rhthe input element function and pass in parameters
+  const authorElement = createInputElement("author", "Enter author", 20);
+  const titleElement = createInputElement("title", "Enter link title", 40);
+  const urlElement = createInputElement("url", "Enter link URL", 40);
 
-form.addEventListener('submit',(e) => {
-    e.preventDefault();
+  // Create submit button
+  const submitElement = document.createElement("input");
+  submitElement.type = "submit";
+  submitElement.value = "Add link";
+  submitElement.classList.add("btn");
+  submitElement.classList.add("btn-primary");
+
+  // Create link submission form
+  const linkFormElement = document.createElement("form");
+  linkFormElement.classList.add("linkForm");
+  linkFormElement.classList.add("form-inline");
+  linkFormElement.appendChild(authorElement);
+  linkFormElement.appendChild(titleElement);
+  linkFormElement.appendChild(urlElement);
+  linkFormElement.appendChild(submitElement);
+
+  // Handle form submission
+  linkFormElement.addEventListener("submit", submitLink);
+
+  return linkFormElement;
+};
+
+//after a new link has been created fetch all the links from the server
+
+fetch(`${serverUrl}/api/links`)
+  .then(response => response.json())
+  .then(links => {
+    links.forEach(link => {
+      const linkElement = createLink(link);
+      content.appendChild(linkElement);
+    });
+  })
+  .catch(err => {
+    console.error(err.message);
+  });
+
   
-  if (!inputTitle.validity.valid || !inputUrl.validity.valid || !inputAuthor.validity.valid) {
-    console.log("Invalid input");
-    return;
-  }
-  
 
-  const formData = new FormData();
-
-  formData.append("title", inputTitle.value)
-  formData.append("url", inputUrl.value)
-  formData.append("author", inputAuthor.value)
-
-//Add new link to page
-
-fetch(`${serverUrl}/api/links`, {
-  method : "POST",
-  body: formData
-})
-.then(response => response.json())
-.then(newLink => {
-  const newLinkElement = createLink(newLink);
-
-  // const infoElement = document.createElement("div");
-  content.appendChild(newLinkElement);
-  
-  inputTitle.value = "";
-  inputUrl.value = "";
-  inputAuthor.value = "";
-})
-.catch(err => {
-  console.log(err.message)
-})   
-})
 
 
 
 //after sending to the server send the response back to the user
 // and display on the screen
+document.getElementById("submitButton").addEventListener("click", () => {
+  // Create link submission form
+  const formElement = createLinkForm();
+  // Add form on page before the first link
+  content.insertBefore(formElement, document.querySelector(".linkWrap"));
+});
 
-fetch(`${serverUrl}/api/links`)
-.then(response => response.json())
-.then(links => {
-  links.forEach(link => {
-    const linkElement =   createLink(link);
-    content.appendChild(linkElement);
-  })
-})
-.catch(err => {
-  console.log(err.message);
-})
 
 
 
