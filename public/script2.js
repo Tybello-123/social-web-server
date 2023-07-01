@@ -86,6 +86,7 @@ const submitLink = e => {
   // Cancel default form behavior
   e.preventDefault();
 
+
   // Create a FormData object, passing the form as a parameter
   const formData = new FormData(e.target);
   // Send link data to the server with an aynchronous POST request
@@ -121,10 +122,10 @@ const submitLink = e => {
 // Create and return a form for submitting a new link
 const createLinkForm = () => {
   // Create input fields for link properties by calling rhthe input element function and pass in parameters
-  const authorElement = createInputElement("author", "Enter author", 20);
+
   const titleElement = createInputElement("title", "Enter link title", 40);
   const urlElement = createInputElement("url", "Enter link URL", 40);
-
+  const authorElement = createInputElement("author", "Enter author", 20);
   // Create submit button
   const submitElement = document.createElement("input");
   submitElement.type = "submit";
@@ -136,9 +137,10 @@ const createLinkForm = () => {
   const linkFormElement = document.createElement("form");
   linkFormElement.classList.add("linkForm");
   linkFormElement.classList.add("form-inline");
-  linkFormElement.appendChild(authorElement);
+ 
   linkFormElement.appendChild(titleElement);
   linkFormElement.appendChild(urlElement);
+  linkFormElement.appendChild(authorElement);
   linkFormElement.appendChild(submitElement);
 
   // Handle form submission
@@ -168,13 +170,39 @@ fetch(`${serverUrl}/api/links`)
 
 //after sending to the server send the response back to the user
 // and display on the screen
-document.getElementById("submitButton").addEventListener("click", () => {
-  // Create link submission form
+const submitButton = document.getElementById("submitButton");
+
+const handleClick = () => {
+  //disable submit button
+  submitButton.disabled = true;
+
+  //create link submission form and assingn it to a variable
+  
   const formElement = createLinkForm();
-  // Add form on page before the first link
-  content.insertBefore(formElement, document.querySelector(".linkWrap"));
-});
+
+  //add form on the first page before the first link in the content Div
+  content.insertBefore(formElement, document.querySelector(".linkWrap"))
+
+ // Handle form submission to the display of the ui and submissions handling
+ formElement.addEventListener("submit", handleFormSubmission);
+
+}
+
+const handleFormSubmission = e => {
+  e.preventDefault();
+
+  //once a link is submitted enable the submit button again
+
+  submitButton.disabled = false;
+  //let it run the handle click function
+submitButton.addEventListener("click", handleClick);
+
+//which inserst the form before the content
 
 
 
+}
+
+
+submitButton.addEventListener("click", handleClick);
 
