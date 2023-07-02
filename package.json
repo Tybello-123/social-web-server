@@ -2,7 +2,7 @@
   "name": "social-web-server",
   "version": "1.0.0",
   "description": "a social web server for adding , removing and displaying links",
-  "main": "script.js",
+  "main": "server.js",
   "scripts": {
     "devStart": "nodemon server.js"
   },
