@@ -1,10 +1,5 @@
-let serverUrl;
-if (process.env.NODE_ENV === "production") {
-  //change production url to the deployment url on netlify 
-  serverUrl = "<production-url>";
-} else {
-  serverUrl = "http://localhost:8080";
-}
+// ensure to change this to the production url so  it can work 
+let serverUrl = "http://localhost:8080";
 
 const content = document.getElementById("content");
 
