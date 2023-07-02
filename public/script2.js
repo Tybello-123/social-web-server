@@ -1,74 +1,70 @@
-const serverUrl = "http://localhost:8080";
-
+// ensure to change this to the production url so  it can work 
+let serverUrl = "http://localhost:8080";
 
 const content = document.getElementById("content");
 
-const createLink = link => {
-  
-// create an element for link title
+const createLink = (link) => {
+  // create an element for link title
   const linkTitle = document.createElement("a");
   linkTitle.classList.add("linkTitle");
-  linkTitle.href = link.url;  
-linkTitle.appendChild(document.createTextNode(link.title));
-  
-//create an element for link url
+  linkTitle.href = link.url;
+  linkTitle.appendChild(document.createTextNode(link.title));
+
+  //create an element for link url
   const linkUrl = document.createElement("span");
   linkUrl.classList.add("linkUrl");
-linkUrl.appendChild(document.createTextNode(link.url));
+  linkUrl.appendChild(document.createTextNode(link.url));
 
-//create an h4 element for title and url
+  //create an h4 element for title and url
   const linkUrlText = document.createElement("h4");
   linkUrlText.classList.add("linkHeadline");
   linkUrlText.appendChild(linkTitle);
   linkUrlText.appendChild(linkUrl);
 
-  
-//create the link author element
+  //create the link author element
   const linkAuthor = document.createElement("span");
   linkAuthor.classList.add("linkAuthor");
-linkAuthor.appendChild(document.createTextNode(`Submitted by ${link.author}`));
-    
-  
-    //create link element 
+  linkAuthor.appendChild(
+    document.createTextNode(`Submitted by ${link.author}`)
+  );
+
+  //create link element
   const linkEl = document.createElement("div");
   linkEl.classList.add("link");
-  
+
   linkEl.appendChild(linkUrlText);
   linkEl.appendChild(linkAuthor);
 
-//create button div second div in the wrapper
+  //create button div second div in the wrapper
   const buttonDiv = document.createElement("div");
- 
-//create button element
+
+  //create button element
   const delButton = document.createElement("button");
-    delButton.classList.add("button");
-    delButton.innerHTML = "delete";
-    delButton.id = "del-btn"; 
+  delButton.classList.add("button");
+  delButton.innerHTML = "delete";
+  delButton.id = "del-btn";
   buttonDiv.appendChild(delButton);
 
+  const linkWrapper = document.createElement("div");
+  linkWrapper.classList.add("linkWrap");
 
- const linkWrapper = document.createElement("div");
-    linkWrapper.classList.add("linkWrap");
- 
-    //append divs to the wrapper
- 
+  //append divs to the wrapper
+
   linkWrapper.appendChild(linkEl);
   linkWrapper.appendChild(buttonDiv);
 
-
-  //delete links  
+  //delete links
   delButton.addEventListener("click", () => {
-   content.removeChild(linkWrapper);
- })
+    content.removeChild(linkWrapper);
+  });
 
-return linkWrapper;
+  return linkWrapper;
+};
 
-}
-
-//create and return a DOM input element 
+//create and return a DOM input element
 //parameters name,placeholder and input size
 
-const createInputElement = (name,placeholder,size) => {
+const createInputElement = (name, placeholder, size) => {
   const inputElement = document.createElement("input");
   inputElement.type = "text";
   inputElement.setAttribute("name", name);
@@ -77,25 +73,22 @@ const createInputElement = (name,placeholder,size) => {
   inputElement.setAttribute("required", "true");
   inputElement.classList.add("form-control");
   return inputElement;
-}
-
-
+};
 
 //capture submitting of link separate to creating the form element
-const submitLink = e => {
+const submitLink = (e) => {
   // Cancel default form behavior
   e.preventDefault();
-
 
   // Create a FormData object, passing the form as a parameter
   const formData = new FormData(e.target);
   // Send link data to the server with an aynchronous POST request
   fetch(`${serverUrl}/links`, {
     method: "POST",
-    body: formData
+    body: formData,
   })
-    .then(response => response.json())
-    .then(newLink => {
+    .then((response) => response.json())
+    .then((newLink) => {
       // Add new link to page, replacing form
       //the new link parameter replaces the link paramenter in the creatLink function created first
       const newLinkElement = createLink(newLink);
@@ -112,12 +105,10 @@ const submitLink = e => {
         content.removeChild(infoElement);
       }, 2000);
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err.message);
     });
 };
-
-
 
 // Create and return a form for submitting a new link
 const createLinkForm = () => {
@@ -137,7 +128,7 @@ const createLinkForm = () => {
   const linkFormElement = document.createElement("form");
   linkFormElement.classList.add("linkForm");
   linkFormElement.classList.add("form-inline");
- 
+
   linkFormElement.appendChild(titleElement);
   linkFormElement.appendChild(urlElement);
   linkFormElement.appendChild(authorElement);
@@ -152,21 +143,16 @@ const createLinkForm = () => {
 //after a new link has been created fetch all the links from the server
 
 fetch(`${serverUrl}/api/links`)
-  .then(response => response.json())
-  .then(links => {
-    links.forEach(link => {
+  .then((response) => response.json())
+  .then((links) => {
+    links.forEach((link) => {
       const linkElement = createLink(link);
       content.appendChild(linkElement);
     });
   })
-  .catch(err => {
+  .catch((err) => {
     console.error(err.message);
   });
-
-  
-
-
-
 
 //after sending to the server send the response back to the user
 // and display on the screen
@@ -177,32 +163,24 @@ const handleClick = () => {
   submitButton.disabled = true;
 
   //create link submission form and assingn it to a variable
-  
+
   const formElement = createLinkForm();
 
   //add form on the first page before the first link in the content Div
-  content.insertBefore(formElement, document.querySelector(".linkWrap"))
+  content.insertBefore(formElement, document.querySelector(".linkWrap"));
 
- // Handle form submission to the display of the ui and submissions handling
- formElement.addEventListener("submit", handleFormSubmission);
+  // Handle form submission to the display of the ui and submissions handling
+  formElement.addEventListener("submit", handleFormSubmission);
+};
 
-}
-
-const handleFormSubmission = e => {
+const handleFormSubmission = (e) => {
   e.preventDefault();
 
   //once a link is submitted enable the submit button again
 
   submitButton.disabled = false;
   //let it run the handle click function
-submitButton.addEventListener("click", handleClick);
-
-
-
-
-
-}
-
+  submitButton.addEventListener("click", handleClick);
+};
 
 submitButton.addEventListener("click", handleClick);
-
